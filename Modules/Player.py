@@ -29,6 +29,11 @@ class Player:
             return False
                     
     def update(self):
+        if self.x == 550 or self.x == 0:   
+            self.falling == False
+            self.onGround = True
+        
+        
         
 
     def render(self,window):
