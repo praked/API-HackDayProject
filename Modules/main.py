@@ -2,7 +2,6 @@ import pygame
 import time
 import random
 
-
 from Brick import *
 from Player import *
 from Level import *
@@ -17,23 +16,21 @@ red = (255,0,0)
 green = (0,120,0)
 
 background = pygame.image.load("Assets/bck.png")
-backgroundRect = background.get_rect()
 
-pixel_x=800
-pixel_y=600
-fps =60
+screenWidth = 800
+screenHeight = 600
+fps = 60
 
-gameDisplay = pygame.display.set_mode((pixel_x,pixel_y))
+gameDisplay = pygame.display.set_mode((screenWidth,screenHeight))
 
 levelobj = Level(0)
 brickList = []
 level = levelobj.level_design()
 
-
 for y in range(len(level)):
 	for x in range(len(level[y])):
 		if (level[y][x] == 1):
-			brickList.append(Brick(x*32,y*32,(185,155,100)))
+			brickList.append(Brick(x*32,y*32,(205,155,100)))
 			
 for brick in brickList:
 	brick.render(gameDisplay)
@@ -61,15 +58,13 @@ def game_intr():
 						gamem()		
 
 def gamem():
-	lead_x_change = -2
-	direction = ""
+	lead_x_change = 0
 	lead_y_change = 0
-	block_size = 40
+	block_size = 32
 	gameOver = False
 	gameExit = False
 	while not gameExit:
-		## OUTER LOOP FOR GAME  
-		
+		## OUTER LOOP FOR GAME  	
 		while gameOver == True :
 			## INNER LOOP FOR GAME OVER
 			gameDisplay.fill(white)
@@ -98,20 +93,21 @@ def gamem():
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
 					gameOver = True		
-				elif event.key == pygame.K_LEFT and direction!="right": 	
-					direction ="left"
-					lead_x_change =-block_size
-					lead_y_change =0
-				elif event.key == pygame.K_RIGHT and direction!= "left":	
-					direction ="right"
-					lead_x_change =block_size
-					lead_y_change =0
-				elif event.key == pygame.K_UP and direction!="down":	
-					direction ="up"
+				elif event.key == pygame.K_LEFT: 	
+					lead_x_change = -block_size
+					lead_y_change = 0
+				elif event.key == pygame.K_RIGHT:	
+					lead_x_change = block_size
+					lead_y_change = 0
+			elif event.type == pygame.KEYUP:
+				if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+					lead_x_change = 0
+					lead_y_change = 0
+					
 		gameDisplay.fill(white)
 		gameDisplay.blit(background, (0,0))	
 		for brick in brickList:
-			brick.x += lead_x_change
+			brick.x -= lead_x_change
 			brick.render(gameDisplay)	
 		pygame.display.update()			
 		clock.tick(fps)
